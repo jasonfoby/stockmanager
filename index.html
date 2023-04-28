@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <title>Style Boxes</title>
+
+
+
+</head>
+
+<body>
+
+
+    <label for="input-box">- 이랜드 리테일 전용 -</label>
+    <input type="text" id="input-box" onkeypress="handleKeyPress(event)" placeholder="여기에 바코드를 스캔해주세요!">
+
+    <div class="button-container">
+        <button onclick="sortStyleBoxes()">Sort by Style Number (A-Z)</button>
+        <button onclick="downloadResults()">Download Results</button>
+    </div>
+    
+    
+
+        <div id="style-boxes" class="container"></div>      
+
+
+
+
+
+    <script>
+        function handleKeyPress(event) {
+            if (event.keyCode === 13) { // Enter key pressed
+                const input = event.target.value;
+                if (input.length !== 16) { // Check input length
+                    console.log("Invalid input");
+                    return;
+                }
+
+                const styleNum = input.substring(0, 9);
+                const colorNum = input.substring(9, 11);
+                const sizeNum = input.substring(11, 14);
+
+                const styleBoxes = document.getElementById("style-boxes");
+                let styleBoxExists = false;
+                styleBoxes.childNodes.forEach((node) => {
+                    const styleNumBox = node.querySelector("input:nth-child(1)");
+                    const colorNumBox = node.querySelector("input:nth-child(2)");
+                    const sizeNumBox = node.querySelector("input:nth-child(3)");
+                    if (styleNumBox.value === styleNum && colorNumBox.value === colorNum && sizeNumBox.value === sizeNum) {
+                        const quantityBox = node.querySelector(".quantity-box");
+                        quantityBox.value = parseInt(quantityBox.value) + 1;
+                        styleBoxExists = true;
+                    }
+                });
+                if (!styleBoxExists) {
+                    const newStyleBox = document.createElement("div");
+                    newStyleBox.id = `style-box-${styleNum}`;
+                    newStyleBox.style.display = "flex";
+                    newStyleBox.style.margin = "10px 0";
+
+                    const styleNumBox = document.createElement("input");
+                    styleNumBox.type = "text";
+                    styleNumBox.value = styleNum;
+                    styleNumBox.style.width = "100px";
+                    styleNumBox.readOnly = true;
+
+                    const colorNumBox = document.createElement("input");
+                    colorNumBox.type = "text";
+                    colorNumBox.value = colorNum;
+                    colorNumBox.style.width = "100px";
+                    colorNumBox.readOnly = true;
+
+                    const sizeNumBox = document.createElement("input");
+                    sizeNumBox.type = "text";
+                    sizeNumBox.value = sizeNum;
+                    sizeNumBox.style.width = "100px";
+                    sizeNumBox.readOnly = true;
+
+                    const quantityBox = document.createElement("input");
+                    quantityBox.type = "text";
+                    quantityBox.value = 1;
+                    quantityBox.style.width = "50px";
+                    quantityBox.classList.add("quantity-box");
+
+                    newStyleBox.appendChild(styleNumBox);
+                    newStyleBox.appendChild(colorNumBox);
+                    newStyleBox.appendChild(sizeNumBox);
+                    newStyleBox.appendChild(quantityBox);
+
+                    styleBoxes.appendChild(newStyleBox);
+                }
+
+                event.target.value = "";
+            }
+        }
+
+        function sortStyleBoxes() {
+            const styleBoxes = document.querySelectorAll('[id^="style-box-"]');
+            const styleBoxArr = Array.from(styleBoxes);
+            styleBoxArr.sort((a, b) => {
+                const styleNumA = a.querySelector("input:nth-child(1)").value;
+                const styleNumB = b.querySelector("input:nth-child(1)").value;
+                return styleNumA.localeCompare(styleNumB, undefined, { numeric: true, sensitivity: 'base' });
+            });
+
+            const styleBoxContainer = document.getElementById("style-boxes");
+            styleBoxContainer.innerHTML = "";
+            styleBoxArr.forEach((styleBox) => {
+                styleBoxContainer.appendChild(styleBox);
+            });
+        }
+
+        function downloadResults() {
+            const styleBoxes = document.querySelectorAll('[id^="style-box-"]');
+            const results = [];
+
+            styleBoxes.forEach((styleBox) => {
+                const styleNum = styleBox.querySelector("input:nth-child(1)").value;
+                const colorNum = styleBox.querySelector("input:nth-child(2)").value;
+                const sizeNum = styleBox.querySelector("input:nth-child(3)").value;
+                const quantity = styleBox.querySelector(".quantity-box").value;
+                const resultLine = `${styleNum}-${colorNum}-${sizeNum}: ${quantity}`;
+                results.push(resultLine);
+            });
+
+            const resultText = results.join("\n");
+            const encodedResultText = encodeURIComponent(resultText);
+            const downloadLink = document.createElement("a");
+            downloadLink.href = `data:text/plain;charset=utf-8,${encodedResultText}`;
+            downloadLink.download = "style_box_results.txt";
+            downloadLink.style.display = "none";
+            document.body.appendChild(downloadLink);
+            downloadLink.click();
+            document.body.removeChild(downloadLink);
+        }
+
+
+
+
+    </script>
+</body>
+
+</html>

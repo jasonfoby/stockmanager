@@ -99,8 +99,14 @@
             const styleBoxArr = Array.from(styleBoxes);
             styleBoxArr.sort((a, b) => {
                 const styleNumA = a.querySelector("input:nth-child(1)").value;
+                const colorNumA = a.querySelector("input:nth-child(2)").value;
+                const sizeNumA = a.querySelector("input:nth-child(3)").value;
                 const styleNumB = b.querySelector("input:nth-child(1)").value;
-                return styleNumA.localeCompare(styleNumB, undefined, { numeric: true, sensitivity: 'base' });
+                const colorNumB = b.querySelector("input:nth-child(2)").value;
+                const sizeNumB = b.querySelector("input:nth-child(3)").value;
+                return styleNumA.localeCompare(styleNumB, undefined, { numeric: true, sensitivity: 'base' }) ||
+                    colorNumA.localeCompare(colorNumB, undefined, { numeric: true, sensitivity: 'base' }) ||
+                    sizeNumA.localeCompare(sizeNumB, undefined, { numeric: true, sensitivity: 'base' });
             });
 
             const styleBoxContainer = document.getElementById("style-boxes");
@@ -109,6 +115,7 @@
                 styleBoxContainer.appendChild(styleBox);
             });
         }
+
 
         function downloadResults() {
             const styleBoxes = document.querySelectorAll('[id^="style-box-"]');

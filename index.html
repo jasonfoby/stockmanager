@@ -18,23 +18,16 @@
     <label for="input-box">- 이랜드 리테일 전용 -</label>
     <input type="text" id="input-box" onkeypress="handleKeyPress(event)" placeholder="여기에 바코드를 스캔해주세요!">
 
+    <div id="style-boxes" class="container"></div>
+
     <div class="button-container">
-        <button onclick="sortStyleBoxes()">Sort by Style Number (A-Z)</button>
         <button onclick="downloadResults()">Download Results</button>
     </div>
-    
-    
-
-        <div id="style-boxes" class="container"></div>      
-
-
-
-
 
     <script>
         function handleKeyPress(event) {
             if (event.keyCode === 13) { // Enter key pressed
-                const input = event.target.value;
+                const input = event.target.value.toUpperCase();
                 if (input.length !== 16) { // Check input length
                     console.log("Invalid input");
                     return;
@@ -93,6 +86,9 @@
 
                     styleBoxes.appendChild(newStyleBox);
                 }
+
+                // 정렬된 상태로 추가
+                sortStyleBoxes();
 
                 event.target.value = "";
             }

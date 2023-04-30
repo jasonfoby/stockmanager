@@ -69,6 +69,21 @@ button {
   margin-bottom: 10px;
 }
 
+
+.add-style-box-button {
+  background-color: #4CAF50;
+  color: #fff;
+  padding-top: 0px;
+  padding-bottom: 0px;
+  margin-left: 5px;
+  margin-top: 0px !important;
+  margin-bottom: 0px !important;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+}
+
+
 /* 스타일 박스 컨테이너에 대한 스타일 */
 #style-boxes {
   display: flex;
@@ -200,3 +215,5 @@ input:focus {
   background-color: rgba(255, 255, 255, 0.108);
   color: rgba(255, 255, 255, 0.108);
 }
+
+

@@ -7,6 +7,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" type="text/css" href="style.css">
     <title>Style Boxes</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.16.9/xlsx.full.min.js"></script>
+
 </head>
 
 <body>
@@ -21,9 +23,11 @@
 
 
     <div class="button-container">
-        <button onclick="downloadResults()">결과 다운로드</button> <!-- 이 부분은 결과를 다운로드하는 버튼입니다. -->
+        <button onclick="downloadResults()">텍스트</button> <!-- 이 부분은 결과를 다운로드하는 버튼입니다. -->
+        <button onclick="downloadResultsXlsx()">엑셀</button> <!-- 이 부분은 결과를 다운로드하는 버튼입니다. -->
     </div>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.16.9/xlsx.full.min.js"></script>
 
     <script>
         function handleKeyPress(event) {
@@ -95,6 +99,10 @@
             }
         }
 
+
+
+        
+
         function sortStyleBoxes() {
             // id가 'style-box-'로 시작하는 모든 엘리먼트를 가져온다.
             const styleBoxes = document.querySelectorAll('[id^="style-box-"]');
@@ -124,6 +132,10 @@
                 styleBoxContainer.appendChild(styleBox);
             });
         }
+
+
+
+
 
 
         function downloadResults() {
@@ -158,6 +170,49 @@
             document.body.removeChild(downloadLink);
         }
 
+
+
+        function s2ab(s) {
+    var buf = new ArrayBuffer(s.length);
+    var view = new Uint8Array(buf);
+    for (var i=0; i<s.length; i++) {
+        view[i] = s.charCodeAt(i) & 0xFF;
+    }
+    return buf;
+}
+
+
+
+
+        function downloadResultsXlsx() {
+  const styleBoxes = document.querySelectorAll('[id^="style-box-"]');
+  const results = [];
+  styleBoxes.forEach((styleBox) => {
+    const styleNum = styleBox.querySelector("input:nth-child(1)").value;
+    const colorNum = styleBox.querySelector("input:nth-child(2)").value;
+    const sizeNum = styleBox.querySelector("input:nth-child(3)").value;
+    const quantity = styleBox.querySelector(".quantity-box").value;
+    const resultLine = [styleNum, colorNum, sizeNum, quantity];
+    results.push(resultLine);
+  });
+  const wb = XLSX.utils.book_new();
+const ws = XLSX.utils.aoa_to_sheet([["스타일", "컬러", "사이즈", "수량"], ...results]);
+XLSX.utils.book_append_sheet(wb, ws, "Style Boxes");
+const wbout = XLSX.write(wb, {bookType:'xlsx', type:'binary'});
+const blob = new Blob([s2ab(wbout)], {type:'application/octet-stream'});
+const url = URL.createObjectURL(blob);
+const downloadLink = document.createElement("a");
+downloadLink.href = url;
+downloadLink.download = "style_box_results.xlsx";
+downloadLink.style.display = "none";
+document.body.appendChild(downloadLink);
+downloadLink.click();
+document.body.removeChild(downloadLink);
+
+}
+
+
+        
         document.addEventListener('click', function (event) {
             var inputBox = document.getElementById('input-box');
             var placeholder = '여기에 바코드를 스캔해주세요!';

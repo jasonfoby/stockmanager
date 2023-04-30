@@ -11,15 +11,15 @@
 
 <body>
     <div class="title"><label for="input-box">- 이랜드 리테일 전용 -</label></div> <!-- 이 부분은 제목을 나타내는 div입니다. -->
-    
-    
+
+
     <input type="text" id="input-box" style="margin-bottom: 10px;" onkeypress="handleKeyPress(event)"
         placeholder="여기에 바코드를 스캔해주세요!"> <!-- 이 부분은 바코드를 입력받는 input 태그입니다. -->
-    
-    
-        <div id="style-boxes" class="container"></div> <!-- 이 부분은 결과를 보여주는 div입니다. -->
 
-    
+
+    <div id="style-boxes" class="container"></div> <!-- 이 부분은 결과를 보여주는 div입니다. -->
+
+
     <div class="button-container">
         <button onclick="downloadResults()">결과 다운로드</button> <!-- 이 부분은 결과를 다운로드하는 버튼입니다. -->
     </div>
@@ -54,7 +54,7 @@
                     const newStyleBox = document.createElement("div");
                     newStyleBox.id = `style-box-${styleNum}`;
                     newStyleBox.style.display = "flex";
-                    newStyleBox.style.margin = "3px 0";
+                    newStyleBox.style.margin = "0px 0";
 
                     const styleNumBox = document.createElement("input");
                     styleNumBox.type = "text";
@@ -157,6 +157,17 @@
             // 다운로드 링크를 body에서 제거한다.
             document.body.removeChild(downloadLink);
         }
+
+        document.addEventListener('click', function (event) {
+            var inputBox = document.getElementById('input-box');
+            var placeholder = '여기에 바코드를 스캔해주세요!';
+
+            if (event.target !== inputBox && inputBox.value === '') {
+                inputBox.placeholder = placeholder;
+            } else {
+                inputBox.placeholder = '';
+            }
+        });
     </script>
 </body>
 
